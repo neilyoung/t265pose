@@ -1,3 +1,4 @@
 theme: jekyll-theme-hacker
 future: true
 timezone: Europe/Berlin
+show_downloads: true
