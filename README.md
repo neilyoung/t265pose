@@ -1,5 +1,5 @@
 
-# t265pose 1.0
+# t265pose 1.0 (work in progress)
 
 ## An application of the [IntelRealsense T.265](https://www.intelrealsense.com/tracking-camera-t265/) camera
 
