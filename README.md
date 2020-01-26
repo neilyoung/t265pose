@@ -11,7 +11,7 @@ The API was implemented in **Python 3.7**. The required additional packages are 
 
 `pip3 install -r requirements.txt`
 
-The API comes as a set of encrypted Python3 scripts. The entry point is defined in `pose_main.py.
+The API comes as a set of encrypted Python3 scripts. The entry point is defined in `pose_main.py`.
 
 Wheel odometry as suggested in the IntelRealSense SDK documentation is not supported in version 1.0. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
 
