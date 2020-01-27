@@ -17,20 +17,20 @@ Here is this little Python script to help you.
 
 - It will enable you to control a T.265 via a simple REST API, unburden you of all the details around.
 - It will enable you to make a real world coordinate the center of your coordinate system, so that all subsequent coordinates are originated from it and referenced to this point in real world. In WGS84 or plain X, Y and Z.
-- The script will allow you to create a fine tuned map for your environment on a Laptop and deploy this to some small mini-PCs, such as a Raspberry Pi in order to be mounted to your hardware, so that those devices can benefit from your mapping efforts.
+- The script will allow you to create a fine tuned map for your environment on a laptop and deploy this to some small mini-PCs, such as Raspberry Pi in order to be mounted to your hardware, so that those devices can benefit from your mapping efforts.
 - The script will finally provide you with location updates of your tracked device with **up to 200 updates** per second in a coordinate system of your choice.
 
-The following REST API controls an **Intel RealSense T.265** tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu 16.04 LTS, macOS Catalina and Raspbian Buster and runs in some POC designs (see [Reference designs](#reference-designs))
+The following REST API controls an **Intel RealSense T.265** tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu 16.04 LTS, macOS Catalina and Raspbian Buster and runs in some POC designs (see [Reference designs](#reference-designs)).
 
-It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 1 requires at least Intel RealSense SDK `2.32.1`.
+It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 0.1 requires at least Intel RealSense SDK `2.32.1`.
 
-The API was implemented in **Python 3.7**. The required additional packages are listed in `requirements.txt`. Install them by issuing
+The API was implemented in **Python 3.7**. The required additional Python packages are listed in `requirements.txt`. Install them by issuing
 
 `pip3 install -r requirements.txt`
 
-The API comes as a set of encrypted Python3 scripts. The entry point is defined in `pose_main.py`.
+before launching the app the first time.
 
-Wheel odometry as suggested in the Intel RealSense SDK documentation is not supported in version 0.1. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
+The API comes as a set of encrypted Python3 scripts. The entry point is defined in `pose_main.py`.
 
 ## How to setup
 
@@ -40,11 +40,15 @@ Will be explained, if the scripts are made available for download. Will happen s
 
 There is an iOS app available, which allows you to issue the API commands below and to display the resulting WGS84 coordinates on a map in a convenient way.
 
-## Version history
+## Version history and current limitations
+
+> Please note: Both, this API and the Intel RealSense SDK are heavily under development, so updates may be necessary from time to time.
 
 - 0.1 February 2020: Initial version
 
-> Please note: Both, this API and the Intel RealSense SDK are heavily under development, so updates may be necessary from time to time.
+Wheel odometry as suggested in the Intel RealSense SDK documentation is not supported in version 0.1. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
+
+The application has currently no sense for floor levels in buildings.
 
 ## Start the API
 
