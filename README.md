@@ -36,10 +36,6 @@ The API comes as a set of encrypted Python3 scripts. The entry point is defined 
 
 Will be explained, if the scripts are made available for download. Will happen soon.
 
-## Companion products
-
-There is an iOS app available, which allows you to issue the API commands below and to display the resulting WGS84 coordinates on a map in a convenient way.
-
 ## Version history and current limitations
 
 > Please note: Both, this API and the Intel RealSense SDK are heavily under development, so updates may be necessary from time to time.
@@ -351,8 +347,6 @@ You save the map and in your next run you make the camera forget the accumulated
 
 Besides the normal use on a laptop or PC with Linux, macOS or Windows the API has been deployed successfully to battery driven devices, such as a Raspberry PI 3B+ and a Banana PI M2 Zero. It has turned out, that a Raspberry PI Zero W is currently too weak to run the Intel RealSense SDK with good performance. It works "kind of" but it is not recommended. There are tutorials, on how to install the SDK plus the T265Pose scripts on such computers.
 
-Since the T.265 only provides a pose stream with
-
 **The Raspberry 3B+ POC design**: It combines a LiPo battery and charger with the PI allowing for about 6h autonomous operation.
 
 ![RPI 3B+ reference design](https://user-images.githubusercontent.com/731020/73166973-41027000-40f7-11ea-869d-02420fdcbb9b.jpg)
@@ -360,3 +354,9 @@ Since the T.265 only provides a pose stream with
 **The Banana PI M2 Zero POC design**: Here we have an 18650 battery shield mounted to the Banana PI:
 
 ![Banana PI M2 Zero reference design](https://user-images.githubusercontent.com/731020/73169476-7198d880-40fc-11ea-8925-141548199ca8.jpg)
+
+## Companion tools
+
+There is an iOS app available, which allows you to issue the API commands below and to display the resulting WGS84 coordinates on a map in a convenient way 
+
+![image06](https://user-images.githubusercontent.com/731020/73193267-9441e600-412a-11ea-82db-5cdd7973597a.jpg)
