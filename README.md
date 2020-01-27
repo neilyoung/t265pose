@@ -357,8 +357,8 @@ Besides the normal use on a laptop or PC with Linux, macOS or Windows the API ha
 
 ## Companion tools
 
-There is an iOS app available, which allows you to issue the API commands below and to display the resulting WGS84 coordinates on a map in a convenient way 
+There is an iOS app available, which allows you to issue the API commands below and to display the resulting WGS84 coordinates on a map in a convenient way.
 
-iPad screenshot:
+Here a screenshot from an iPad:
 
 ![iPad screenshot](https://user-images.githubusercontent.com/731020/73210016-b303a500-4149-11ea-8139-366c8121b4e5.jpg)
