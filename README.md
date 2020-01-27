@@ -92,7 +92,7 @@ The provided dictionary `configuration` (here in form of the file `start_config.
 | position_update_rate  | Integer        | Number of coordinates or raw poses to be delivered per second, physical maximum 200                                              | 30        |
 | deliver_raw_poses     | Boolean        | Controls, if the app shall provide "raw" poses via the websocket interface (non-geo-referenced poses) | false     |
 | world_reference_frame | String         | Determines the world's reference frame. `NED` or `ENU` allowed                                        | "ENU"     |
-| strict_pose_checking  | Boolean        | see [Geo referencing](#geo_referencing)                                                               | true      |
+| strict_pose_checking  | Boolean        | see [Geo referencing](#geo-referencing)                                                               | true      |
 | start_orientation     | String         | How the camera is oriented if started. Default is `forward`, USB port to the right                       | "forward" |
 
 The dictionary `enabler` contains these properties:
@@ -104,11 +104,11 @@ The dictionary `enabler` contains these properties:
 
 If `loading`, `recording` or `saving` is specified, all properties of the dictionary `enabler` are mandatory. A `reset` at startup makes the T.265 forget all accumulated map points in memory. Usually the camera will be setup to keep a map during several sessions, if not reset or power-cycled in between. The app delivers `WGS84` and `XYZ`, which requires the definition of at least one `geo_ref` in the `geo_refs` array. `Bag` files recorded with the `recording` configuration can be played back with either `realsense-viewer` or the `rb.py` script or other [ROS bag_tools](http://wiki.ros.org/bag_tools). The bag file recorded just contains only poses, no video at all.
 
-If `deliver_raw_poses` is enabled, the app starts immediately to deliver raw poses via the websocket interface (good for debugging or testing). It will switch to real world coordinates later on, if at least one geo reference is specified at start **and** found in the map by the Intel RealSense SDK (for details see [Geo referencing](#geo_referencing)).
+If `deliver_raw_poses` is enabled, the app starts immediately to deliver raw poses via the websocket interface (good for debugging or testing). It will switch to real world coordinates later on, if at least one geo reference is specified at start **and** found in the map by the Intel RealSense SDK (for details see [Geo referencing](#geo-referencing)).
 
 By default returned geo referenced X, Y and Z coordinates are defined with respect to the `East-North-Up (ENU)` world reference frame. This can be overwritten to be `North-East-Down (NED)` world reference frame by setting the parameter `world_reference_frame` of the start configuration to `NED`.
 
-The parameter `strict_pose_checking` defines, if a certain pose should be strictly checked to match these criterias in case, a marker should be set (see `SET_MARKER` API and [Geo referencing](#geo_referencing)):
+The parameter `strict_pose_checking` defines, if a certain pose should be strictly checked to match these criterias in case, a marker should be set (see `SET_MARKER` API and [Geo referencing](#geo-referencing)):
 
 - Pose confidence is 3 ("high")
 - Camera's absolute pitch (rotation around camera's X) and roll (rotation around camera's Z axis) is smaller than 2°, which minimizes the error in the final Z coordinate (altitude) to be smaller then 0.5 m over 10 m distance.
@@ -168,7 +168,7 @@ The `geo_ref` dictionary holds these properties (all mandatory, if specified):
 | altitude  | Float  | Altitude in m of the geo reference                                |
 | heading   | Float  | Heading of the geo reference (North/East/South/West 0/90/180/270) |
 
-For the meaning of this configuration element please refer to section [Geo referencing](#geo_referencing).
+For the meaning of this configuration element please refer to section [Geo referencing](#geo-referencing).
 
 ### Stop tracking operation (`STOP_OPERATION`)
 
@@ -186,7 +186,7 @@ This operation must be performed only once, but very carefully for each map. If 
 curl localhost:6000/api/v1/marker/:name -X PUT
 ```
 
-Sets the marker with the specified name `:name` to the current map. The marker has to be defined beforehand in the array `geo_refs` of the start configuration. For the use of this API please refer to section [Geo referencing](#geo_referencing).
+Sets the marker with the specified name `:name` to the current map. The marker has to be defined beforehand in the array `geo_refs` of the start configuration. For the use of this API please refer to section [Geo referencing](#geo-referencing).
 
 
 ### Delete a marker (`DELETE_MARKER`)
