@@ -1,11 +1,30 @@
 
-# t265pose 1.0 (work in progress)
+# T265Pose 0.1 (work in progress)
 
-## An application of the [IntelRealsense T.265](https://www.intelrealsense.com/tracking-camera-t265/) camera
+# An application of the [Intel RealSense T.265](https://www.intelrealsense.com/tracking-camera-t265/) camera
 
-The following API controls an IntelRealsense T.265 tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu, macOS and Raspbian and runs in corresponding reference designs (see [Reference designs](#reference-designs))
+## How the system works
 
-It uses the [IntelRealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 1 requires at least IntelRealSense SDK `2.32.1`.
+For understanding the following, imagine you have the problem of having to spatially track a small robot indoors. You simply want to know where it hangs out. You have already tried everything:  **Wifi, iBeacons, UWB** - nothing really worked satisfyingly and the accuracy was not that great at all.
+
+You could find hints on the internet about a new technology called **VSLAM** (**V**isual **S**imultaneous **L**ocation **A**nd **M**apping), which is supposed to do it all much better and "only" needs a camera, but even that was much too complicated, seemed to be too expensive and in general...
+
+Then suddenly someone mentions a relatively new camera from Intel, called T.265, not too expansive, which should be able to do all this from home. Just plug it in and go.
+
+You buy such a thing - and the problems are there 🙁...
+
+Ok, you made it to set it up and the camera indeed delivers finished poses, even in X, Y and Z, speed and acceleration are also in there, but how the hell are these values to understand?
+
+Here is this little Python script to help you.
+
+- It will enable you to control a T.265 via a simple REST API, unburden you of all the details around.
+- It will enable you to make a real world coordinate the center of your coordinate system, so that all subsequent coordinates are originated from it and referenced to this point in real world. In WGS84 or plain X, Y and Z.
+- The script will allow you to create a fine tuned map for your environment on a Laptop and deploy this to some small mini-PCs, such as a Raspberry Pi in order to be mounted to your hardware, so that those devices can benefit from your mapping efforts.
+- The script will finally provide you with location updates of your tracked device with **up to 200 updates** per second in a coordinate system of your choice.
+
+The following REST API controls an **Intel RealSense T.265** tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu 16.04 LTS, macOS Catalina and Raspbian Buster and runs in some POC designs (see [Reference designs](#reference-designs))
+
+It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 1 requires at least Intel RealSense SDK `2.32.1`.
 
 The API was implemented in **Python 3.7**. The required additional packages are listed in `requirements.txt`. Install them by issuing
 
@@ -13,29 +32,39 @@ The API was implemented in **Python 3.7**. The required additional packages are 
 
 The API comes as a set of encrypted Python3 scripts. The entry point is defined in `pose_main.py`.
 
-Wheel odometry as suggested in the IntelRealSense SDK documentation is not supported in version 1.0. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
+Wheel odometry as suggested in the Intel RealSense SDK documentation is not supported in version 0.1. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
+
+## How to setup
+
+Will be explained, if the scripts are made available for download. Will happen soon.
+
+## Companion products
+
+There is an iOS app available, which allows you to issue the API commands below and to display the resulting WGS84 coordinates on a map in a convenient way.
 
 ## Version history
 
-- 1.0 February 2020, initial version
+- 0.1 February 2020: Initial version
+
+> Please note: Both, this API and the Intel RealSense SDK are heavily under development, so updates may be necessary from time to time.
 
 ## Start the API
 
 The API can be launched as like any other Python3 script from the command line. The T.265 needs to be plugged.
 
-Get help regarding command line options:
+Get help regarding command line options (recommended first):
 
 ```bash
 python3 -O -u pose_main.py --help
 ```
 
-Standard API Port is 6000, Log level WARNING. Launch with log level set to DEBUG:
+Start with standard API port 6000, log level DEBUG:
 
 ```bash
 python3 -O -u pose_main.py -ll DEBUG
 ```
 
-Start in background, log to file `log.txt` in the `./logs` subfolder:
+Start in background, log to file `log.txt` in the `./logs` sub folder:
 
 ```bash
 nohup python3 -O -u  pose_main.py -ll DEBUG -lf log.txt &
@@ -55,48 +84,47 @@ The provided dictionary `configuration` (here in form of the file `start_config.
 |-----------------------|----------------|-------------------------------------------------------------------------------------------------------|-----------|
 | geo_refs              | Array          | Array of zero or more `geo_ref` dictionaries                                                          | None      |
 | loading               | Dict `enabler` | Controls loading of a map at start                                                                    | None      |
-| recording             | Dict `enabler` | Controls recording of a bag file (ROSBAG)                                                             | None      |
+| recording             | Dict `enabler` | Controls recording of a bag file (ROSBAG), poses only                                                             | None      |
 | saving                | Dict `enabler` | Controls saving of a map                                                                              | None      |
 | reset                 | Boolean        | If true, the T265 hardware is reset at startup. 2 s delay after reset.                                | false     |
-| position_update_rate  | Integer        | Number of coordinates or raw poses delivered per second                                               | 30        |
+| position_update_rate  | Integer        | Number of coordinates or raw poses to be delivered per second, physical maximum 200                                              | 30        |
 | deliver_raw_poses     | Boolean        | Controls, if the app shall provide "raw" poses via the websocket interface (non-geo-referenced poses) | false     |
 | world_reference_frame | String         | Determines the world's reference frame. `NED` or `ENU` allowed                                        | "ENU"     |
 | strict_pose_checking  | Boolean        | see [Geo referencing](#geo_referencing)                                                               | true      |
-| start_orientation     | String         | How the cam is oriented if started. Default is `forward`, USB port to the right                       | "forward" |
+| start_orientation     | String         | How the camera is oriented if started. Default is `forward`, USB port to the right                       | "forward" |
 
 The dictionary `enabler` contains these properties:
 
 | Property  | Type    | Meaning                                        | Default |
 |-----------|---------|------------------------------------------------|---------|
 | enabled   | Boolean | Enables or disables the functionality          | None    |
-| file_name | String  | A name of a file for the desired functionality | None    |
+| file_name | String  | A file name to be used for the desired functionality | None    |
 
-If `loading`, `recording` or `saving` are specified, all properties of the dictionary `enabler` are mandatory. A `reset` at startup makes the T265 forget all accumulated map points in memory. Basically the camera will be setup to keep a map during several sessions, if not reset or power-cycled in between. The app delivers `WGS84` and `XYZ`, which requires the definition of at least one `geo_ref` in the `geo_refs` array. `Bag` files recorded with the `recording` configuration can be played back with either `realsense-viewer` or the `rb.py` script or other [ROS bag_tools](http://wiki.ros.org/bag_tools). The bag file recorded just contains poses, no video is contained.
+If `loading`, `recording` or `saving` is specified, all properties of the dictionary `enabler` are mandatory. A `reset` at startup makes the T.265 forget all accumulated map points in memory. Usually the camera will be setup to keep a map during several sessions, if not reset or power-cycled in between. The app delivers `WGS84` and `XYZ`, which requires the definition of at least one `geo_ref` in the `geo_refs` array. `Bag` files recorded with the `recording` configuration can be played back with either `realsense-viewer` or the `rb.py` script or other [ROS bag_tools](http://wiki.ros.org/bag_tools). The bag file recorded just contains only poses, no video at all.
 
-If `deliver_raw_poses` is enabled, the app starts immediately to deliver raw poses via the websocket interface (good for debugging or testing). It will switch to real world coordinates later on, if at least one geo reference is specified at start and found in the map or a geo reference will be saved to the map at a certain position during the training (for details see [Geo referencing](#geo_referencing)).
+If `deliver_raw_poses` is enabled, the app starts immediately to deliver raw poses via the websocket interface (good for debugging or testing). It will switch to real world coordinates later on, if at least one geo reference is specified at start **and** found in the map by the Intel RealSense SDK (for details see [Geo referencing](#geo_referencing)).
 
 By default returned geo referenced X, Y and Z coordinates are defined with respect to the `East-North-Up (ENU)` world reference frame. This can be overwritten to be `North-East-Down (NED)` world reference frame by setting the parameter `world_reference_frame` of the start configuration to `NED`.
 
-The parameter `strict_pose_checking` defines, if a certain pose should be strictly checked to match these criterias in case, a marker should be defined (see [Geo referencing](#geo_referencing)):
+The parameter `strict_pose_checking` defines, if a certain pose should be strictly checked to match these criterias in case, a marker should be set (see `SET_MARKER` API and [Geo referencing](#geo_referencing)):
 
-- Pose confidence is 3 (confident)
-- Camera's absolute pitch (rotation around camera's X) and roll (rotation around camera's Z axis) is smaller than 2 °, which minimizes the error in the Z coordinate (altitude) to be smaller then 0.5 m over 10 m distance.
+- Pose confidence is 3 ("high")
+- Camera's absolute pitch (rotation around camera's X) and roll (rotation around camera's Z axis) is smaller than 2°, which minimizes the error in the final Z coordinate (altitude) to be smaller then 0.5 m over 10 m distance.
 
-This is to minimize the error in the resulting Z coordinate (altitude).
+The parameter `start_orientation`, which defaults to `forward`, defines, how the camera is oriented at start. The camera can either start looking `forward`, `backward`, `upward` or `downward`. Only `forward` is supported in version 0.1 of the app.
 
-The parameter `start_orientation`, which defaults to `forward`, defines, how the camera is oriented at start. The camera can either start looking `forward`, `backward`, `upward` or `downward`. Only `forward` and only this is supported in version 1.0 of the app.
+It is necessary to provide this information to the app, since the camera's reference frame is depending on it (see [T.265 Tracking Camera](https://github.com/IntelRealSense/librealsense/blob/master/doc/t265.md)).
 
-It is necessary to provide this information to the app, since the camera's reference frame is depending on it (see )
+Except the `GET_STATUS` API, which is a bit more verbose, all API functions return a dictionary `result` plus an HTTP response code 200 ("success") or 400 ("error").
 
-Except the `GET_STATUS` API, which is a bit more verbose, all API functions return a dictionary `result` plus either the HTTP response code 200 (success) or 400 (error), which consists a string tagged with either `success` or `error`, describing the result of the operation.
+The dictionary `result` contains these properties (Exclusive-OR):
 
-The dictionary `result` contains these properties:
+| Property | Type   | Meaning             |
+|----------|--------|---------------------|
+| success  | String | The success message |
+| error    | String | The error message   |
 
-| Property              | Type                         | Meaning |
-|-----------------------|------------------------------|---------|
-| "success" or "errror" | The success or error message | None    |
-
-**Example payload:**
+**Example payload for `START_OPERATION`:**
 
 ```json
 {
@@ -124,11 +152,11 @@ The dictionary `result` contains these properties:
     "deliver_raw_poses": false,
     "world_reference_frame": "ned",
     "strict_pose_checking": true,
-    "cam_direction": "forward"
+    "start_orientation": "forward"
  }
 ```
 
-The `geo_ref` dictionary holds these properties (all mandatory):
+The `geo_ref` dictionary holds these properties (all mandatory, if specified):
 
 | Property  | Type   | Meaning                                                           |
 |-----------|--------|-------------------------------------------------------------------|
@@ -137,6 +165,8 @@ The `geo_ref` dictionary holds these properties (all mandatory):
 | longitude | Float  | WGS84 longitude of the geo reference                              |
 | altitude  | Float  | Altitude in m of the geo reference                                |
 | heading   | Float  | Heading of the geo reference (North/East/South/West 0/90/180/270) |
+
+For the meaning of this configuration element please refer to section [Geo referencing](#geo_referencing).
 
 ### Stop tracking operation (`STOP_OPERATION`)
 
@@ -154,7 +184,8 @@ This operation must be performed only once, but very carefully for each map. If 
 curl localhost:6000/api/v1/marker/:name -X PUT
 ```
 
-Sets the marker with the specified name `:name` to the current map. The marker has to be defined beforehand in the array `geo_refs` of the start configuration.
+Sets the marker with the specified name `:name` to the current map. The marker has to be defined beforehand in the array `geo_refs` of the start configuration. For the use of this API please refer to section [Geo referencing](#geo_referencing).
+
 
 ### Delete a marker (`DELETE_MARKER`)
 
@@ -164,11 +195,11 @@ Deletes the marker with the given `:name` from the map.
 curl localhost:6000/api/v1/marker/:name -X DELETE
 ```
 
-Deletes the marker with the specified name `:name` from the current map. There seems to be no real use case for this function. Basically it is just in, because it is possible :)
+Deletes the marker with the specified name `:name` from the current map. There seems to be no real use case for this function. Basically it is just in, because it is possible 😀.
 
 ### Save a map (`SAVE_MAP`)
 
-The currently accumulated map of a T.265 camera is exported to disk, if the parameter `saving` of the start configuration has enabled it.
+The currently accumulated map of a T.265 camera is exported to disk, if the parameter `saving` of the start configuration has enabled it. This map can be deployed to other devices and/or used later on. If the map is geo referenced (see `SET_MARKER`), it will be enable the camera to deliver real world coordinates immediately after recognizing the environment again, such that an additional geo referencing is not necessary again.
 
 ```bash
 curl localhost:6000/api/v1/map -X PUT
@@ -176,7 +207,7 @@ curl localhost:6000/api/v1/map -X PUT
 
 ### Get Status (`GET_STATUS`)
 
-Get the status of the running app.
+Get the status of the running application.
 
 ```bash
 curl localhost:6000/api/v1/status
@@ -243,7 +274,28 @@ The `rotation` dictionary contains these properties:
 | z        | Float | Quaternion element Z |
 | w        | Float | Quaternion element W |
 
-## Georeferencing
+## How to obtain the positions
+
+The position stream is provided to you via a `websocket`. The update rate follows your setting `position_update_rate` and is physically limited to max. 200 updates per second.
+
+You participate in a position update by issuing the following command, either by a command line call or by using a websocket client:
+
+```bash
+curl --include                                               \
+     --no-buffer                                             \
+     --header "Connection: Upgrade"                          \
+     --header "Upgrade: websocket"                           \
+     --header "Host: example.com:80"                         \
+     --header "Origin: http://example.com:80"                \
+     --header "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ=="  \
+     --header "Sec-WebSocket-Version: 13"                    \
+     --output -                                              \
+     http://localhost:6000/api/v1/websocket
+```
+
+The payload content is of either `last_pose` or `last_fix`, depending on the state and start settings.
+
+## Geo referencing
 
 In accordance with the purpose of the camera, a user will be extremely interested in finding out the location of a person, a robot, a device in general in **real world coordinates** from the camera, provided that the person, robot or device carries the camera in action. This cannot be done automatically and without the help of the user, since the camera naturally has no outer world reference at all, indeed no idea of the environment in which it is used. How should it?
 
@@ -255,7 +307,7 @@ The red axis represents X, the green Y and the blue Z in a right-handed coordina
 
 Below we have the reference frame of a forward looking camera, USB port right: Y is determined by the gravity, X points right, Z is positive towards the back.
 
-> Note: This axis alignment must not always be of that kind. Refer [to the original Intel documentation](https://github.com/IntelRealSense/librealsense/blob/master/doc/t265.md) for what happens, if the camera is started e.g. looking downwards.
+> Note: This axis alignment must not always be of that kind. Refer [to the original Intel RealSense documentation](https://github.com/IntelRealSense/librealsense/blob/master/doc/t265.md) for what happens, if the camera is started e.g. looking downwards.
 
 ![t265_reference_frame](https://user-images.githubusercontent.com/731020/73137688-2b3f6d00-405b-11ea-95cc-45eb2a706753.jpg)
 
@@ -273,7 +325,7 @@ The ENU world reference frame:
 
 The app supports both depending on the start configuration parameter `world_reference_frame`.
 
-The app also solves the problem of the variable camera coordinate frame by stitching it together with a fix world reference coordinate held outside. This is done by utilizing the `"static_node"` APIs provided by the RealSense-SDK. The idea behind is to tell the camera at a certain point in space and time to store a static node with a pre-defined name in the map "right here". The firmware of the camera then combines this name with a specific point in its derived 3D model of the outer environment and  stores it in the map. The process of managing a static marker is pictured by the APIs `SET_MARKER` and `DELETE_MARKER` described above.
+The app also solves the problem of the variable camera coordinate frame by stitching it together with a fix world reference coordinate held outside. This is done by utilizing the `"static_node"` APIs provided by the Intel RealSense SDK. The idea behind is to tell the camera at a certain point in space and time to store a static node with a pre-defined name in the map "right here". The firmware of the camera then combines this name with a specific point in its derived 3D model of the outer environment and  stores it in the map. The process of managing a static marker is pictured by the APIs `SET_MARKER` and `DELETE_MARKER` described above.
 
 If later the app tries to retrieve the same node on the same map, the SDK delivers the aligned coordinates of this static node to the app, now w.r.t. the **current** reference frame of the camera. This alone would not help, if no instance would combine these retrieved coordinates with a geo reference stored anywhere. This is what the app does for you. Optionally you are allowed to provide the WGS84 coordinates of this reference point and the app will deliver you WGS84 for your current position.
 
@@ -291,4 +343,18 @@ So here are the simple steps to be done, if you try to map a new area, given you
 
 Say, you have a floor plan of your environment. You decide to make the **lower left corner of the floor plan** your world reference frame's origin. You start with a fresh map anywhere in the room, walking around a bit. Later you move continuously mapping to the point, which is (0,0,0) in your floor plan. You align the camera for your convenience so that it looks parallel to the left wall and set a marker, which you have defined to be named "marker" with lat/lng/alt/heading all set to 0. If the marker is set, the app will immediately flood you with X, Y and Z (also with lat/lng/alt), starting at (0,0,0), which is your (0,0,0) reference point in the world reference frame chosen. You move around and you will see, that X, Y and Z now reflect the distance on each axis to the marker's world coordinate in meters. Good so far and not surprising at all.
 
-You save the map and in your next run you make the cam forget the accumulated map (be either power cycling it or do a RESET at start by setting the `reset` parameter in the start configuration). You move to a place in your room, which can be anywhere, and start a new tracking round. If (and only if) the camera again recognizes the scene and is able to recover the marked point, the app will deliver you new coordinates, which reflect your current position w.r.t. the point set as (0,0,0). This is all of the magic. You can from then on all the time determine your relative X, Y and Z or your absolute latitude, longitude and altitude based on what you have stored only once in the map. The map, btw., will enhance with every new run, so it makes sense to store it again and again, but you can of course also use a canned map, created one time on one device, on a completely different device.
+You save the map and in your next run you make the camera forget the accumulated map (be either power cycling it or do a RESET at start by setting the `reset` parameter in the start configuration). You move to a place in your room, which can be anywhere, and start a new tracking round. If (and only if) the camera again recognizes the scene and is able to recover the marked point, the app will deliver you new coordinates, which reflect your current position w.r.t. the point set as (0,0,0). This is all of the magic. You can from then on all the time determine your relative X, Y and Z or your absolute latitude, longitude and altitude based on what you have stored only once in the map. The map, btw., will enhance with every new run, so it makes sense to store it again and again, but you can of course also use a canned map, created one time on one device, on a completely different device.
+
+## Reference designs
+
+Besides the normal use on a laptop or PC with Linux, macOS or Windows the API has been deployed successfully to battery driven devices, such as a Raspberry PI 3B+ and a Banana PI M2 Zero. It has turned out, that a Raspberry PI Zero W is currently too weak to run the Intel RealSense SDK with good performance. It works "kind of" but it is not recommended. There are tutorials, on how to install the SDK plus the T265Pose scripts on such computers.
+
+Since the T.265 only provides a pose stream with
+
+**The Raspberry 3B+ POC design**: It combines a LiPo battery and charger with the PI allowing for about 6h autonomous operation.
+
+![RPI 3B+ reference design](https://user-images.githubusercontent.com/731020/73166973-41027000-40f7-11ea-869d-02420fdcbb9b.jpg)
+
+**The Banana PI M2 Zero POC design**: Here we have an 18650 battery shield mounted to the Banana PI:
+
+![Banana PI M2 Zero reference design](https://user-images.githubusercontent.com/731020/73169476-7198d880-40fc-11ea-8925-141548199ca8.jpg)
