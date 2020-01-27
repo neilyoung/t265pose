@@ -309,7 +309,7 @@ The red axis represents X, the green Y and the blue Z in a right-handed coordina
 
 Below we have the reference frame of a forward looking camera, USB port right: Y is determined by the gravity, X points right, Z is positive towards the back.
 
-> Note: This axis alignment must not always be of that kind. Refer [to the original Intel RealSense documentation](https://github.com/IntelRealSense/librealsense/blob/master/doc/t265.md) for what happens, if the camera is started e.g. looking downwards.
+> Note: This axis alignment must not always be of that kind. Please refer to the [Intel RealSense documentation](https://github.com/IntelRealSense/librealsense/blob/master/doc/t265.md) for what happens, if the camera is started e.g. looking downwards.
 
 ![t265_reference_frame](https://user-images.githubusercontent.com/731020/73137688-2b3f6d00-405b-11ea-95cc-45eb2a706753.jpg)
 
