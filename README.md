@@ -1,9 +1,7 @@
 
-# T265Pose 0.1 (work in progress)
-
 # An application of the [Intel RealSense T.265](https://www.intelrealsense.com/tracking-camera-t265/) camera
 
-## How the system works
+## How it works
 
 For understanding the following, imagine you have the problem of having to spatially track a small robot indoors. You simply want to know where it hangs out. You have already tried everything:  **Wifi, iBeacons, UWB** - nothing really worked satisfyingly and the accuracy was not that great at all.
 
