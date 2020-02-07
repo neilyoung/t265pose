@@ -22,7 +22,7 @@ Here is this little Python script to help you.
 
 The following REST API controls an **Intel RealSense T.265** tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu 16.04 LTS, macOS Catalina and Raspbian Buster and runs in some POC designs (see [Reference designs](#reference-designs)).
 
-It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 0.1 requires at least Intel RealSense SDK `2.32.1`.
+It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 0.1 requires at least Intel RealSense SDK `2.32.1`. For Windows and Linux it is sufficient to install the PyPi Wheel (https://pypi.org/project/pyrealsense2/), which is already configured in `requirements.txt`. For macOS and Raspbian you would have to install the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense) and compile the Python bindings from source.
 
 The API was implemented in **Python 3.7**. The required additional Python packages are listed in `requirements.txt`. Install them by issuing
 
@@ -30,7 +30,7 @@ The API was implemented in **Python 3.7**. The required additional Python packag
 
 before launching the app the first time.
 
-The API comes as a set of encrypted Python3 scripts. The entry point is defined in `pose_main.py`.
+The API comes as a set of obfuscated Python3 scripts, which enforce the usage of Python 3.7. The entry point is defined in `pose_main.py`.
 
 ## How to setup
 
