@@ -34,17 +34,17 @@ The API comes as a set of obfuscated Python3 scripts, which enforce the usage of
 
 ## How to setup
 
-Will be explained, if the scripts are made available for download. Will happen soon.
+Find the release packages in the `Code/Releases` section of the Github repo of this project. There you will also find detailed installation instructions.
 
 ## Version history and current limitations
 
 > Please note: Both, this API and the Intel RealSense SDK are heavily under development, so updates may be necessary from time to time.
 
-- 0.1 February 2020: Initial version
+- 0.1 February 2020: Initial version, Beta 1
 
 Wheel odometry as suggested in the Intel RealSense SDK documentation is not supported in version 0.1. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
 
-The application has currently no sense for floor levels in buildings.
+The application has currently no sense for floor levels in buildings.   
 
 ## Start the API
 
