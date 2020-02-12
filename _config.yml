@@ -6,3 +6,8 @@ plugins:
   - jekyll-seo-tag
 webmaster_verifications:
   google: cQnvtAcM35yBVl12YxYJ4oCa-z3bQsXcsfP4zNv_9OM
+
+seo:
+  name: A T.265 application
+  type: BlogPosting,
+

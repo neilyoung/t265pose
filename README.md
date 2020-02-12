@@ -1,5 +1,4 @@
 
-{% seo %}
 # An application of the [Intel RealSense T.265](https://www.intelrealsense.com/tracking-camera-t265/) camera
 
 ## How it works
