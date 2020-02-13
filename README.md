@@ -1,5 +1,6 @@
+## TL;DR
 
-# An application of the [Intel RealSense T.265](https://www.intelrealsense.com/tracking-camera-t265/) camera
+Code and instructions [here](https://github.com/neilyoung/t265pose/releases)...
 
 ## How it works
 
@@ -20,9 +21,9 @@ Here is this little Python script to help you.
 - The script will allow you to create a fine tuned map for your environment on a laptop and deploy this to some small mini-PCs, such as Raspberry Pi in order to be mounted to your hardware, so that those devices can benefit from your mapping efforts.
 - The script will finally provide you with location updates of your tracked device with **up to 200 updates** per second in a coordinate system of your choice.
 
-The following REST API controls an **Intel RealSense T.265** tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu 16.04 LTS, macOS Catalina and Raspbian Buster and runs in some POC designs (see [Reference designs](#reference-designs)).
+The following REST API controls an [**Intel RealSense T.265**](https://www.intelrealsense.com/tracking-camera-t265/) tracking camera and enables geographic tracking of persons or vehicles. The API has been tested under Linux Ubuntu 16.04 LTS, macOS Catalina and Raspbian Buster and runs in some POC designs (see [Reference designs](#reference-designs)).
 
-It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 0.1 requires at least Intel RealSense SDK `2.32.1`. For Windows and Linux it is sufficient to install the PyPi Wheel (https://pypi.org/project/pyrealsense2/), which is already configured in `requirements.txt`. For macOS and Raspbian you would have to install the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense) and compile the Python bindings from source.
+It uses the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense), which must be installed in some form on the target system. Installation instructions can be obtained in the repository linked above. API version 0.1 requires at least Intel RealSense SDK `2.32.1`. For Windows and Linux it is sufficient to install the [PyPi Wheel](https://pypi.org/project/pyrealsense2/), which is already configured in `requirements.txt`. For macOS and Raspbian you would have to install the [Intel RealSense SDK](https://github.com/IntelRealSense/librealsense) and compile the Python bindings from source.
 
 The API was implemented in **Python 3.7**. The required additional Python packages are listed in `requirements.txt`. Install them by issuing
 
@@ -34,7 +35,7 @@ The API comes as a set of obfuscated Python3 scripts, which enforce the usage of
 
 ## How to setup
 
-Find the release packages in the `Code/Releases` section of the Github repo of this project. There you will also find detailed installation instructions.
+Find the release packages in the my [github repository](https://github.com/neilyoung/t265pose/releases). There you will also find detailed installation instructions.
 
 ## Version history and current limitations
 
@@ -43,8 +44,6 @@ Find the release packages in the `Code/Releases` section of the Github repo of t
 - 0.1 February 2020: Initial version, Beta 1
 
 Wheel odometry as suggested in the Intel RealSense SDK documentation is not supported in version 0.1. More on T.265 [can be found here](https://dev.intelrealsense.com/docs/intel-realsensetm-visual-slam-and-the-t265-tracking-camera).
-
-The application has currently no sense for floor levels in buildings.   
 
 ## Start the API
 
@@ -82,20 +81,20 @@ The provided dictionary `configuration` (here in form of the file `start_config.
 |-----------------------|----------------|-------------------------------------------------------------------------------------------------------|-----------|
 | geo_refs              | Array          | Array of zero or more `geo_ref` dictionaries                                                          | None      |
 | loading               | Dict `enabler` | Controls loading of a map at start                                                                    | None      |
-| recording             | Dict `enabler` | Controls recording of a bag file (ROSBAG), poses only                                                             | None      |
+| recording             | Dict `enabler` | Controls recording of a bag file (ROSBAG), poses only                                                 | None      |
 | saving                | Dict `enabler` | Controls saving of a map                                                                              | None      |
 | reset                 | Boolean        | If true, the T265 hardware is reset at startup. 2 s delay after reset.                                | false     |
-| position_update_rate  | Integer        | Number of coordinates or raw poses to be delivered per second, physical maximum 200                                              | 30        |
+| position_update_rate  | Integer        | Number of coordinates or raw poses to be delivered per second, physical maximum 200                   | 30        |
 | deliver_raw_poses     | Boolean        | Controls, if the app shall provide "raw" poses via the websocket interface (non-geo-referenced poses) | false     |
 | world_reference_frame | String         | Determines the world's reference frame. `NED` or `ENU` allowed                                        | "ENU"     |
 | strict_pose_checking  | Boolean        | see [Geo referencing](#geo-referencing)                                                               | true      |
-| start_orientation     | String         | How the camera is oriented if started. Default is `forward`, USB port to the right                       | "forward" |
+| start_orientation     | String         | How the camera is oriented if started. Default is `forward`, USB port to the right                    | "forward" |
 
 The dictionary `enabler` contains these properties:
 
-| Property  | Type    | Meaning                                        | Default |
-|-----------|---------|------------------------------------------------|---------|
-| enabled   | Boolean | Enables or disables the functionality          | None    |
+| Property  | Type    | Meaning                                              | Default |
+|-----------|---------|------------------------------------------------------|---------|
+| enabled   | Boolean | Enables or disables the functionality                | None    |
 | file_name | String  | A file name to be used for the desired functionality | None    |
 
 If `loading`, `recording` or `saving` is specified, all properties of the dictionary `enabler` are mandatory. A `reset` at startup makes the T.265 forget all accumulated map points in memory. Usually the camera will be setup to keep a map during several sessions, if not reset or power-cycled in between. The app delivers `WGS84` and `XYZ`, which requires the definition of at least one `geo_ref` in the `geo_refs` array. `Bag` files recorded with the `recording` configuration can be played back with either `realsense-viewer` or the `rb.py` script or other [ROS bag_tools](http://wiki.ros.org/bag_tools). The bag file recorded just contains only poses, no video at all.
@@ -127,7 +126,7 @@ The dictionary `result` contains these properties (Exclusive-OR):
 ```json
 {
     "geo_refs": [{
-        "name": "Doorknob",
+        "name": "Door",
         "latitude": 12.345678,
         "longitude": 12.345678,
         "altitude": 0,
@@ -220,7 +219,7 @@ The response is variable depending on the state and may contain these properties
 | last_known_confidence | Integer          | Confidence of the last known pose, equivalent to the T.265 `tracker_confidence`: 0 - fail, 1 - low, 2 - medium, 3 - high |
 | reference_point       | Dict `geo_ref`   | The currently used geo reference                                                                                         |
 | last_fix              | Dict `last_fix`  | The last position fix                                                                                                    |
-| last_pose             | Dict `last_pose` | The last raw camera pose, in case `deliver_raw_poses` is `true`                                                              |
+| last_pose             | Dict `last_pose` | The last raw camera pose, in case `deliver_raw_poses` is `true`                                                          |
 
 The dictionaries `last_fix` and `last_pose` are Exclusive-OR.
 
