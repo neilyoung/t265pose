@@ -1,4 +1,4 @@
-theme: jekyll-theme-hacker
+theme: jekyll-theme-minimal
 future: true
 timezone: Europe/Berlin
 show_downloads: true
